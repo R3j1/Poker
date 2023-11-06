@@ -1,0 +1,7 @@
+﻿.btn-animate {
+    transition: transform 0.2s ease; 
+}
+
+.btn-animate:active {
+    transform: scale(1.1); 
+}

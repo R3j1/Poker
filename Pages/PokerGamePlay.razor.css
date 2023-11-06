@@ -1,0 +1,68 @@
+﻿@keyframes reveal {
+    0% {
+        transform: scaleY(0);
+        opacity: 0;
+    }
+
+    50% {
+        transform: scaleY(1.2);
+        opacity: 0.5;
+    }
+
+    100% {
+        transform: scaleY(1);
+        opacity: 1;
+    }
+}
+
+.community-cards {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card {
+    width: 100px;
+    height: 150px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+    margin: 0 10px;
+    animation: reveal 1s;
+    border-radius: 5px;
+    text-align: center;
+    line-height: 150px;
+    font-size: 12px;
+    background-color: orangered; 
+    color: yellow;
+    font-weight:bolder;
+}
+
+.card-image {
+    width: 100%; 
+    height: 100%; 
+    border-radius: 10px; 
+}
+
+.poker-table {
+    background-color: forestgreen; 
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.action-scroll {
+    height: 150px; /* Set the desired height for the scrollable area */
+    overflow-y: auto; /* Enable vertical scrolling */
+    border: 1px solid #e1e1e1; /* Add a border for clarity */
+    padding: 5px; /* Add some padding to improve appearance */
+}
+
+.text-yellow {
+    color: yellow;
+    font-weight: bold;
+}
+
+.status-box {
+    background: linear-gradient(to bottom, red, green);
+    padding: 20px;
+    border-radius: 10px;
+}

@@ -1,0 +1,37 @@
+﻿@page "/ViewDeck"
+
+<h3 class="text-center">Card Deck</h3>
+
+<div>
+    <label for="deckSelector">Select a Deck:</label>
+    <div class="dropdown">
+        <select id="deckSelector" class="form-control">
+            @foreach (var deck in decks)
+            {
+                <option value="@deck">@deck.DeckName</option>
+            }
+        </select>
+    </div>
+</div>
+
+<br />
+
+<div class="button-container text-center">
+    <button class="btn btn-primary" @onclick="ShuffleDeck">Shuffle Deck</button>
+    <button class="btn btn-primary" @onclick="OrderDeck">Order Deck</button>
+</div>
+
+<br />
+
+<div class="card-container text-center">
+    @foreach (var card in selectedDeck.GetCards())
+    {
+        <div class="card">
+            <div class="card-content">
+                <img src="@card.CardImage" alt="@card.ToString()" class="card-image" />
+                <p class="card-description">@card.ToString()</p>
+            </div>
+        </div>
+    }
+</div>
+

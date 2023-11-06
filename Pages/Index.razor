@@ -1,0 +1,54 @@
+﻿@page "/"
+@inject NavigationManager navManager
+@inject IPokerGame gameplay
+@inject IPlayer players
+
+<PageTitle>Play Poker</PageTitle>
+
+<br />
+
+<h1>Hello, welcome to the world of poker!</h1>
+
+<br />
+<br />
+
+<h3 class="mb-4">Add Players to Gameplay Session</h3>
+
+<div class="mb-4">
+    <label for="selectedPlayer" class="form-label">Select a Player:</label>
+    <select class="form-select" @onchange="UpdateSelectedPlayer" value="@selectedPlayer">
+        <option value="">-- Select Player --</option>
+        @foreach (var player in players.GetPlayers())
+        {
+            @if (!gameplay.GetPlayers().Any(x => x.Name == player.Name))
+            {
+                <option value="@player.Name">@player.Name</option>
+            }
+        }
+    </select>
+    <br />
+    <button class="btn btn-primary" @onclick="AddPlayer" disabled="@string.IsNullOrWhiteSpace(selectedPlayer)">Add Player</button>
+</div>
+
+<div>
+    <h4 class="mb-3">Players in the Game Session:</h4>
+    <ul class="list-group">
+        @foreach (var player in gameplay.GetPlayers())
+        {
+            <li class="list-group-item">@player.Name</li>
+        }
+    </ul>
+</div>
+
+<div class="mt-4">
+    @*todo: if there is 48 players added then remove the ability to any more players
+    todo: add a feature when they can remove a player added making sure it is not the active player playing the game*@
+    @if (gameplay.GetPlayers().Count >= 3 && gameplay.GetPlayers().Count <= 48)
+    {
+        <button @onclick="NavigateToGamePlayPage" type="button" class="btn btn-success btn-xl btn-animate">Start Poker Game</button>
+    }
+    else
+    {
+        <p class="text-danger">Please add between 3 and 48 players to start the game.</p>
+    }
+</div>

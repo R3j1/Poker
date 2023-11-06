@@ -1,0 +1,96 @@
+﻿@page "/ManagePlayers"
+@inject IPlayer players
+
+    <PageTitle>Manage Players</PageTitle>
+
+    <div class="container">
+    <h3 class="text-center">Manage Players</h3>
+
+    <div class="row">
+        <div class="col-md-4">
+            <h4>Add New Player</h4>
+            <form>
+                <div class="form-group">
+                    <label for="newName">Name:</label>
+                    <input type="text" id="newName" class="form-control" @bind="newPlayerName" />
+                </div>
+                <div class="form-group">
+                    <label for="newChips">Chips:</label>
+                    <input type="number" id="newChips" class="form-control" @bind="newPlayerChips" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="mb-4">
+        <br />
+        <button class="btn btn-primary" @onclick="AddPlayer">Add Player</button>
+    </div>
+
+    @if (players == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-md-8">
+                <h4>All players</h4>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Chips</th>
+                            <th>Games Won</th>
+                            <th>Games Lost</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var player in players.GetPlayers())
+                        {
+                            <tr>
+                                <td>@player.Name</td>
+                                <td>@player.Chips</td>
+                                <td>@player.GamesWon</td>
+                                <td>@player.GamesLost</td>
+                                <td>@player.PlayerCreated.ToString("MM/dd/yyyy HH:mm:ss")</td>
+                                <td>
+                                    <button class="btn btn-primary btn-sm" @onclick="() => EditPlayer(player)">Edit</button>
+                                    @if(!player.SessionActivePlayer)
+                                    {
+                                        <button class="btn btn-danger btn-sm" style="margin-left: 5px" @onclick="() => DeletePlayer(player)">Delete</button>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        @if (editPlayer != null)
+        {
+            <div class="row">
+                <div class="col-md-4">
+                    <h4>Edit Player</h4>
+                    <form>
+                        <div class="form-group">
+                            <label for="editName">Name:</label>
+                            <input type="text" id="editName" class="form-control" @bind="editPlayer.Name" />
+                        </div>
+                        <div class="form-group">
+                            <label for="editChips">Chips:</label>
+                            <input type="number" id="editChips" class="form-control" @bind="editPlayer.Chips" />
+                        </div>
+                        <br>
+                        <button class="btn btn-success" @onclick="SaveEditedPlayer">Save</button>
+                        <button class="btn btn-secondary" @onclick="CancelEdit">Cancel</button>
+                    </form>
+                </div>
+            </div>
+        }
+    }
+</div>
+<br />

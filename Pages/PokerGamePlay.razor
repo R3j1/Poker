@@ -1,0 +1,175 @@
+﻿@page "/PokerGamePlay"
+@inject IJSRuntime JSRuntime
+@inject IPlayer players
+@inject IPokerGame gameplay
+
+<h1 class="text-center">Poker Game</h1>
+<p class="text-center">
+    <span style="font-weight: bolder; color: green;">Pot Total: @gameplay.GetPotTotal()</span>
+</p>
+
+<div class="row justify-content-center align-items-center">
+    <div class="col-md-8">
+        <div class="poker-table text-center">
+            <div class="community-cards">
+                @for (int i = 0; i < 5; i++)
+                {
+                    <div class="card">
+                        @if (i < gameplay.GetCommunityCards().Count)
+                        {
+                            <img src="@gameplay.GetCommunityCards()[i].CardImage" class="card-image" />
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<br />
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <h2 class="text-center">Game Status</h2>
+        <br />
+        <div class="text-center status-box">
+            <p class="h4 text-yellow">@gameplay.GameStatusPrompt</p>
+        </div>
+    </div>
+</div>
+
+<br>
+
+@if (gameplay.GamePlayActive)
+{
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="row">
+                <div class="col-md-4">
+                    <h2>My Stats</h2>
+                    <br />
+                    <p>Player Name: @sessionPlayer.Name</p>
+                    <p>Chips: @sessionPlayer.Chips</p>
+                    <p>Current Bet: @gameplay.GetCurrentBetAmount()</p>
+                    <p>Total Bet: @sessionPlayer.TotalBet</p>
+                </div>
+                <div class="col-md-4">
+                    <h2>My Actions</h2>
+                <br />
+                <div class="d-flex flex-column">
+                    @if(gameplay.GetCurrentBetAmount() > 0)
+                        {
+                            <button @onclick="Call" disabled="@(!sessionPlayersTurn)" class="btn btn-primary mb-2">Call</button>
+                        }
+                        else
+                        {
+                            <button @onclick="Check" disabled="@(!sessionPlayersTurn)" class="btn btn-primary mb-2">Check</button>
+                        }
+                    <div class="d-flex mb-2">
+                        <input disabled="@(!sessionPlayersTurn)" type="number" @bind="raiseAmount" @oninput="ValidateInput" class="form-control mr-2 text-center" placeholder="Enter Bet" style="flex: 1;" />
+                        <button class="btn btn-primary" @onclick="Raise" disabled="@(isRaiseButtonDisabled || !sessionPlayersTurn)" style="margin-left:10px; flex: 1;">Raise</button>
+                    </div>
+                    <button class="btn btn-danger mb-2" disabled="@(!sessionPlayersTurn)" @onclick="Fold">Fold</button>
+                </div>
+                </div>
+                <div class="col-md-4">
+                    <h2>My Hand</h2>
+                    <br />
+                    <div class="d-flex">
+                        <div class="card mr-2">
+                            @if(GetCurrentPlayersFirstCard() != string.Empty)
+                            {
+                                <img src="@GetCurrentPlayersFirstCard()" class="card-image" />
+                            }
+                        </div>
+                        <div class="card">
+                            @if (GetCurrentPlayersSecondCard() != string.Empty)
+                            {
+                                <img src="@GetCurrentPlayersSecondCard()" class="card-image" />
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br />
+}
+else
+{
+    <div class="row">
+        <div class="col-md-12 text-center mt-4">
+            <button class="btn btn-success btn-lg" @onclick="PlayAgain">Play Again</button>
+        </div>
+    </div>
+
+    <br />
+}
+
+<h2 class="text-center">Player Information</h2>
+<br />
+<div>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>Player Name</th>
+                <th>Chips Available</th>
+                <th>Chips Bet</th>
+                <th>Player Cards</th>
+                <th>Actions Taken</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var player in gameplay.GetPlayers())
+            {
+                <tr>
+                    <td>@player.Name</td>
+                    <td>@player.Chips</td>
+                    <td>@player.TotalBet</td>
+                    <td>
+                        <div class="d-flex">
+                            <div class="card mr-2">
+                                @if(player.Hand.CardCount >= 1)
+                                {
+                                    if (gameplay.RevealPlayerCards && player.CurrentAction != Enums.PlayerAction.Fold)
+                                    {
+                                        <img src="@player.Hand.GetCards()[0].CardImage" class="card-image" />
+                                    }
+                                    else
+                                    {
+                                        <span>Hidden</span>
+                                    }
+                                }
+                            </div>
+                            <div class="card">
+                                @if (player.Hand.CardCount >= 1)
+                                {
+                                    if (gameplay.RevealPlayerCards && player.CurrentAction != Enums.PlayerAction.Fold)
+                                    {
+                                        <img src="@player.Hand.GetCards()[1].CardImage" class="card-image" />
+                                    }
+                                    else
+                                    {
+                                        <span>Hidden</span>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="action-scroll">
+                            <ul class="list-unstyled">
+                            @foreach (var log in player.ActionsTakenLog)
+                            {
+                                <li>@log</li>
+                            }
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
